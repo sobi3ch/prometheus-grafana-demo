@@ -1,0 +1,28 @@
+---
+version: '3'
+services:
+  apache:
+    image: sobi3ch/httpd
+    build: ./httpd
+    container_name: apache
+    ports:
+     - "80:80"
+
+  apache-exporter:
+    image: lusotycoon/apache-exporter
+    ports:
+     - "9117:9117"
+    depends_on: ['apache']
+    
+  prometheus:
+    image: sobi3ch/prometheus
+    build: ./prometheus
+    links:
+      - apache-exporter
+    ports:
+     - "9090:9090"
+    
+  grafana:
+    image: grafana/grafana
+    ports:
+     - "3000:3000"
