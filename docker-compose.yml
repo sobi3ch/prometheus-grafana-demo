@@ -9,20 +9,34 @@ services:
      - "80:80"
 
   apache-exporter:
-    image: lusotycoon/apache-exporter
+    image: sobi3ch/apache-exporter
+    build: ./apache-exporter
     ports:
      - "9117:9117"
     depends_on: ['apache']
-    
+  
+  ###########################
+  # Add python metrics server from /home/sobi3ch/sandbox/python
+  python-metrics:
+    image: python-prometheus-client
+    build: ./python-metrics 
+    ports:
+      - "8000:8000" 
+  
   prometheus:
     image: sobi3ch/prometheus
     build: ./prometheus
     links:
       - apache-exporter
     ports:
-     - "9090:9090"
+      - "9090:9090"
     
   grafana:
     image: grafana/grafana
     ports:
-     - "3000:3000"
+      - "3000:3000"
+    volumes:
+      - ./grafana.txt:/tmp/grafana.txt
+      
+volumes:
+  grafana:
